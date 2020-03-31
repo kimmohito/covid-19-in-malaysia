@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="shortcut icon" type="image/png" href="/"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+<body style="background-color: rgba(223, 249, 251, 0.5);">
+    <div style="padding: 100px;">
+       <canvas id="myChart"></canvas> 
+    </div>
+</body>
+<script>
+
+    fetch("https://pomber.github.io/covid19/timeseries.json")
+        .then( res => res.json())
+        .then( (data) => {
+            let infos = data.Malaysia
+
+            infos.forEach(info => {
+                let state = 0;
+                chart.data.labels.push(info.date)
+
+                chart.data.datasets[state].data.push(info.confirmed)
+                state++
+                chart.data.datasets[state].data.push(info.deaths)
+                state++
+                chart.data.datasets[state].data.push(info.recovered)
+            })
+            
+            chart.update()
+        })
+        
+    let ctx = document.getElementById('myChart').getContext('2d');
+    let chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Confirmed',
+                borderColor: 'rgb(248, 239, 186)',
+                data: []
+            }, {
+                label: 'Death',
+                borderColor: 'rgb(255, 99, 132)',
+                data: []
+            }, {
+                label: 'Recovered',
+                borderColor: 'rgb(46, 204, 113)',
+                data: []
+            }
+         ]
+        },
+
+        options: {
+            title: {
+                display: true,
+                text: 'COVID-19 in Malaysia',
+                fontSize: 20
+            },
+            legend: {
+                labels: {
+                    fontColor: 'black'
+                }
+            }
+        }
+    })
+</script>
+</html>
